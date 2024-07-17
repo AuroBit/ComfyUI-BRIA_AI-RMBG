@@ -5,6 +5,7 @@ from PIL import Image
 from .briarmbg import BriaRMBG
 from torchvision.transforms.functional import normalize
 import numpy as np
+import folder_paths
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -40,7 +41,13 @@ class BRIA_RMBG_ModelLoader_Zho:
   
     def load_model(self):
         net = BriaRMBG()
-        model_path = os.path.join(current_directory, "RMBG-1.4/model.pth")
+        model_path = None
+        model_name = "RMBG-1.4/model.pth"
+        folder_name = "bria"
+        if folder_name in folder_paths.folder_names_and_paths:
+            model_path = folder_paths.get_full_path(folder_name, model_name)
+        if model_path is None:
+            model_path = os.path.join(current_directory, model_name)
         net.load_state_dict(torch.load(model_path, map_location=device))
         net.to(device)
         net.eval() 
